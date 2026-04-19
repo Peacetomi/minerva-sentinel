@@ -1,0 +1,1 @@
+import { ActivityPanel } from '../features/activity/ActivityPanel';export function ActivityPage(){return <main className="workspace"><header className="topbar"><div><p className="eyebrow">Audit trail</p><h1>Activity</h1></div></header><ActivityPanel/></main>}
