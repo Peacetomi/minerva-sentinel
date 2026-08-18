@@ -7,7 +7,8 @@ let requestId = 0;
 const copy = <T>(value: T): T => structuredClone(value);
 export const caseService = {
     reset() { records = structuredClone(seedCases); requestId = 0; scenarioController.reset(); },
-    async list(filters: CaseFilters, kind: 'list' | 'refresh' = 'list') { const id = ++requestId; await scenarioController.wait(kind, `${kind}:${id}`); return { ...queryCases(records, filters), requestId: id, records: copy(queryCases(records, filters).records) }; },
+    async list(filters: CaseFilters, kind: 'list' | 'refresh' = 'list') { const id = ++requestId; await scenarioController.wait(kind, `${kind}:${id}`); const queried = queryCases(records, filters);
+        return { ...queried, existingIds: records.map((record) => record.id), requestId: id, records: copy(queried.records) }; },
     async search(query: string) { const id = ++requestId; await scenarioController.wait('search', `search:${id}`); const q = query.trim().toLowerCase(); return { requestId: id, records: copy(records.filter(r => !q || `${r.title} ${r.assignee} ${r.id}`.toLowerCase().includes(q)).slice(0, 8)) }; },
     async get(id: string) { await scenarioController.wait('list', `get:${id}`); const found = records.find(r => r.id === id); return found ? copy(found) : null; },
     async update(id: string, patch: CasePatch) { await scenarioController.wait('update', `update:${id}`); const index = records.findIndex(r => r.id === id); if (index < 0)

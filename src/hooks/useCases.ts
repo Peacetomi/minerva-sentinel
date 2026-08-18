@@ -1,23 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CaseFilters, CasePatch, CaseRecord } from '../features/cases/types';
 import { caseService } from '../services/caseService';
+import { overlayPatches } from '../utils/reconcile';
 interface State {
     records: CaseRecord[];
     allIds: string[];
+    existingIds: string[];
     total: number;
     loading: boolean;
     refreshing: boolean;
     error: string | null;
 }
 export function useCases(filters: CaseFilters) {
-    const [state, setState] = useState<State>({ records: [], allIds: [], total: 0, loading: true, refreshing: false, error: null });
+    const [state, setState] = useState<State>({ records: [], allIds: [], existingIds: [], total: 0, loading: true, refreshing: false, error: null });
     const owner = useRef(0);
     const pending = useRef(new Map<string, CasePatch[]>());
     const load = useCallback(async (kind: 'list' | 'refresh' = 'list') => { const token = ++owner.current; setState(s => ({ ...s, loading: kind === 'list' && !s.records.length, refreshing: kind === 'refresh', error: null })); try {
         const result = await caseService.list(filters, kind);
         if (token !== owner.current)
             return;
-        setState(s => ({ ...s, records: result.records.map(record => applyPending(record, pending.current.get(record.id) ?? [])), allIds: result.allIds, total: result.total, loading: false, refreshing: false }));
+        setState(s => ({ ...s, records: result.records.map(record => overlayPatches(record, pending.current.get(record.id) ?? [])), allIds: result.allIds, existingIds: result.existingIds, total: result.total, loading: false, refreshing: false }));
     }
     catch (e) {
         if (token === owner.current)
@@ -33,7 +35,7 @@ export function useCases(filters: CaseFilters) {
             pending.current.set(id, queue);
         else
             pending.current.delete(id);
-        setState(s => ({ ...s, records: s.records.map(r => r.id === id ? applyPending(saved, queue) : r) }));
+        setState(s => ({ ...s, records: s.records.map(r => r.id === id ? overlayPatches(saved, queue) : r) }));
         return saved;
     }
     catch (e) {
@@ -48,4 +50,3 @@ export function useCases(filters: CaseFilters) {
     } }, [load]);
     return { ...state, refresh, optimisticUpdate };
 }
-function applyPending(record: CaseRecord, patches: CasePatch[]) { return patches.reduce((current, patch) => ({ ...current, ...patch }), record); }
