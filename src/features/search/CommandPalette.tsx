@@ -1,2 +1,17 @@
-import { useEffect,useRef,useState } from 'react';import type { CaseRecord } from '../cases/types';import { useCommandSearch } from './useCommandSearch';
-export function CommandPalette({open,onClose,onOpenCase}:{open:boolean;onClose:()=>void;onOpenCase:(record:CaseRecord)=>void}){const[query,setQuery]=useState('');const inputRef=useRef<HTMLInputElement>(null);const{results,loading}=useCommandSearch(query,open);useEffect(()=>{if(open){setQuery('');queueMicrotask(()=>inputRef.current?.focus())}},[open]);useEffect(()=>{if(!open)return;const key=(e:KeyboardEvent)=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();onClose()}};window.addEventListener('keydown',key,true);return()=>window.removeEventListener('keydown',key,true)},[open,onClose]);if(!open)return null;return <div className="palette-backdrop"><section className="palette" role="dialog" aria-modal="true" aria-label="Command search"><label htmlFor="command-search" className="sr-only">Search all cases</label><input ref={inputRef} id="command-search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search by case, owner, or ID"/><div role="listbox" aria-label="Search results">{loading?<p>Searching…</p>:results.map(record=><button role="option" aria-selected="false" key={record.id} onClick={()=>onOpenCase(record)}><strong>{record.title}</strong><small>{record.id} · {record.assignee}</small></button>)}</div></section></div>}
+import { useEffect, useRef, useState } from 'react';
+import type { CaseRecord } from '../cases/types';
+import { useCommandSearch } from './useCommandSearch';
+export function CommandPalette({ open, onClose, onOpenCase }: {
+    open: boolean;
+    onClose: () => void;
+    onOpenCase: (record: CaseRecord) => void;
+}) { const [query, setQuery] = useState(''); const inputRef = useRef<HTMLInputElement>(null); const { results, loading } = useCommandSearch(query, open); useEffect(() => { if (open) {
+    setQuery('');
+    queueMicrotask(() => inputRef.current?.focus());
+} }, [open]); useEffect(() => { if (!open)
+    return; const key = (e: KeyboardEvent) => { if (e.key === 'Escape') {
+    e.preventDefault();
+    e.stopPropagation();
+    onClose();
+} }; window.addEventListener('keydown', key, true); return () => window.removeEventListener('keydown', key, true); }, [open, onClose]); if (!open)
+    return null; return <div className="palette-backdrop"><section className="palette" role="dialog" aria-modal="true" aria-label="Command search"><label htmlFor="command-search" className="sr-only">Search all cases</label><input ref={inputRef} id="command-search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search by case, owner, or ID"/><div role="listbox" aria-label="Search results">{loading ? <p>Searching…</p> : results.map(record => <button role="option" aria-selected="false" key={record.id} onClick={() => onOpenCase(record)}><strong>{record.title}</strong><small>{record.id} · {record.assignee}</small></button>)}</div></section></div>; }

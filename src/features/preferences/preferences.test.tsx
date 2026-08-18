@@ -1,2 +1,5 @@
-import { fireEvent,screen } from '@testing-library/react';import { describe,expect,it } from 'vitest';import { renderApp } from '../../test/render';import { SettingsPage } from '../../app/SettingsPage';
-describe('preferences',()=>{it('renders default density',()=>{renderApp(<SettingsPage/>);expect(screen.getByLabelText('Density')).toHaveValue('comfortable')});it('persists density after change',()=>{renderApp(<SettingsPage/>);fireEvent.change(screen.getByLabelText('Density'),{target:{value:'compact'}});expect(screen.getByLabelText('Density')).toHaveValue('compact')});it('toggles auto refresh',()=>{renderApp(<SettingsPage/>);fireEvent.click(screen.getByLabelText('Auto-refresh cases'));expect(screen.getByLabelText('Auto-refresh cases')).toBeChecked()})})
+import { fireEvent, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { renderApp } from '../../test/render';
+import { SettingsPage } from '../../app/SettingsPage';
+describe('preferences', () => { it('renders default density', () => { renderApp(<SettingsPage />); expect(screen.getByLabelText('Density')).toHaveValue('comfortable'); }); it('persists density after change', () => { renderApp(<SettingsPage />); fireEvent.change(screen.getByLabelText('Density'), { target: { value: 'compact' } }); expect(screen.getByLabelText('Density')).toHaveValue('compact'); }); it('toggles auto refresh', () => { renderApp(<SettingsPage />); fireEvent.click(screen.getByLabelText('Auto-refresh cases')); expect(screen.getByLabelText('Auto-refresh cases')).toBeChecked(); }); });

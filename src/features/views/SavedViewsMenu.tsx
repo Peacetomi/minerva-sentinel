@@ -1,2 +1,10 @@
-import { useState } from 'react';import type { CaseFilters } from '../cases/types';import { useSavedViews } from './useSavedViews';
-export function SavedViewsMenu({filters,onApply}:{filters:CaseFilters;onApply:(filters:Omit<CaseFilters,'page'>)=>void}){const{views,add,remove}=useSavedViews();const[name,setName]=useState('');return <details className="views"><summary>Saved views</summary><div className="views-menu"><form onSubmit={e=>{e.preventDefault();if(name.trim()){add(name.trim(),filters);setName('')}}}><label>View name<input value={name} onChange={e=>setName(e.target.value)}/></label><button>Save current</button></form>{views.length===0?<p>No saved views yet.</p>:views.map(view=><div key={view.id} className="saved-view"><button onClick={()=>onApply(view.filters)}>{view.name}</button><button aria-label={`Delete ${view.name}`} onClick={()=>remove(view.id)}>×</button></div>)}</div></details>}
+import { useState } from 'react';
+import type { CaseFilters } from '../cases/types';
+import { useSavedViews } from './useSavedViews';
+export function SavedViewsMenu({ filters, onApply }: {
+    filters: CaseFilters;
+    onApply: (filters: Omit<CaseFilters, 'page'>) => void;
+}) { const { views, add, remove } = useSavedViews(); const [name, setName] = useState(''); return <details className="views"><summary>Saved views</summary><div className="views-menu"><form onSubmit={e => { e.preventDefault(); if (name.trim()) {
+    add(name.trim(), filters);
+    setName('');
+} }}><label>View name<input value={name} onChange={e => setName(e.target.value)}/></label><button>Save current</button></form>{views.length === 0 ? <p>No saved views yet.</p> : views.map(view => <div key={view.id} className="saved-view"><button onClick={() => onApply(view.filters)}>{view.name}</button><button aria-label={`Delete ${view.name}`} onClick={() => remove(view.id)}>×</button></div>)}</div></details>; }

@@ -1,2 +1,12 @@
-import { useEffect,useRef,useState } from 'react';import { caseService } from '../../services/caseService';import type { CaseRecord } from '../cases/types';
-export function useCommandSearch(query:string,open:boolean){const[state,setState]=useState<{results:CaseRecord[];loading:boolean}>({results:[],loading:false});const owner=useRef(0);useEffect(()=>{if(!open){setState({results:[],loading:false});return}const token=++owner.current;const handle=setTimeout(()=>{setState(s=>({...s,loading:true}));void caseService.search(query).then(result=>{if(token===owner.current)setState({results:result.records,loading:false})}).catch(()=>{if(token===owner.current)setState({results:[],loading:false})})},120);return()=>clearTimeout(handle)},[open,query]);return state}
+import { useEffect, useRef, useState } from 'react';
+import { caseService } from '../../services/caseService';
+import type { CaseRecord } from '../cases/types';
+export function useCommandSearch(query: string, open: boolean) { const [state, setState] = useState<{
+    results: CaseRecord[];
+    loading: boolean;
+}>({ results: [], loading: false }); const owner = useRef(0); useEffect(() => { if (!open) {
+    setState({ results: [], loading: false });
+    return;
+} const token = ++owner.current; const handle = setTimeout(() => { setState(s => ({ ...s, loading: true })); void caseService.search(query).then(result => { if (token === owner.current)
+    setState({ results: result.records, loading: false }); }).catch(() => { if (token === owner.current)
+    setState({ results: [], loading: false }); }); }, 120); return () => clearTimeout(handle); }, [open, query]); return state; }

@@ -1,2 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';import { readJson, writeJson } from '../utils/storage';
-export function usePersistedState<T>(key:string,initial:T){const[state,setState]=useState<T>(()=>readJson(key,initial));useEffect(()=>writeJson(key,state),[key,state]);useEffect(()=>{const listener=(event:StorageEvent)=>{if(event.key===key&&event.newValue){try{setState(JSON.parse(event.newValue) as T)}catch{}}};window.addEventListener('storage',listener);return()=>window.removeEventListener('storage',listener)},[key]);const reset=useCallback(()=>setState(initial),[initial]);return[state,setState,reset] as const}
+import { useCallback, useEffect, useState } from 'react';
+import { readJson, writeJson } from '../utils/storage';
+export function usePersistedState<T>(key: string, initial: T) { const [state, setState] = useState<T>(() => readJson(key, initial)); useEffect(() => writeJson(key, state), [key, state]); useEffect(() => { const listener = (event: StorageEvent) => { if (event.key === key && event.newValue) {
+    try {
+        setState(JSON.parse(event.newValue) as T);
+    }
+    catch { }
+} }; window.addEventListener('storage', listener); return () => window.removeEventListener('storage', listener); }, [key]); const reset = useCallback(() => setState(initial), [initial]); return [state, setState, reset] as const; }

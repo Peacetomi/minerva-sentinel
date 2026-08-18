@@ -1,4 +1,5 @@
-export function isEditableTarget(target:EventTarget|null){
- if(!(target instanceof HTMLElement)) return false;
- return target.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||target.closest('[contenteditable="true"]')!==null;
+export function isEditableTarget(target: EventTarget | null) {
+    if (!(target instanceof HTMLElement))
+        return false;
+    return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.closest('[contenteditable="true"]') !== null;
 }
