@@ -7,7 +7,7 @@ export function CaseDrawer({ record, onClose, onSave }: {
     onClose: () => void;
     onSave: (id: string, patch: CasePatch) => Promise<CaseRecord>;
 }) { const closeRef = useRef<HTMLButtonElement>(null); const [saving, setSaving] = useState(false); useEffect(() => { if (record)
-    closeRef.current?.focus(); }, [record?.id]); useEffect(() => { if (!record)
+    closeRef.current?.focus(); }, [record]); useEffect(() => { if (!record)
     return; const listener = (e: KeyboardEvent) => { if (e.key === 'Escape') {
     e.preventDefault();
     onClose();

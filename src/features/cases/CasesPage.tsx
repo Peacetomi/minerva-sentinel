@@ -21,7 +21,7 @@ import type { CaseRecord } from './types';
 export function CasesPage() {
   const { filters, update } = useUrlFilters();
   const cases = useCases(filters);
-  const selection = useSelection();
+  const { reconcile: reconcileSelection } = useSelection();
   const { preferences } = usePreferences();
   const [activeRecord, setActiveRecord] = useState<CaseRecord | null>(null);
   const [commandOpen, setCommandOpen] = useState(false);
@@ -54,9 +54,9 @@ export function CasesPage() {
 
   useEffect(() => {
     if (!cases.loading) {
-      selection.reconcile(cases.existingIds);
+      reconcileSelection(cases.existingIds);
     }
-  }, [cases.existingIds, cases.loading, selection.reconcile]);
+  }, [cases.existingIds, cases.loading, reconcileSelection]);
 
   useAutoRefresh({
     enabled: preferences.autoRefresh,

@@ -4,5 +4,7 @@ export function usePersistedState<T>(key: string, initial: T) { const [state, se
     try {
         setState(JSON.parse(event.newValue) as T);
     }
-    catch { }
+    catch {
+        return;
+    }
 } }; window.addEventListener('storage', listener); return () => window.removeEventListener('storage', listener); }, [key]); const reset = useCallback(() => setState(initial), [initial]); return [state, setState, reset] as const; }
